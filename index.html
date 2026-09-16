@@ -4,42 +4,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevOps Demo</title>
+    <title>DevOps Demo | v2.0</title>
 
     <style>
-        body {
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary: #38bdf8;
+            --secondary: #818cf8;
+            --accent: #34d399;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            padding: 20px;
         }
 
         .card {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 48px;
+            width: 100%;
+            max-width: 480px;
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 40px rgba(56, 189, 248, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(52, 211, 153, 0.15);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
         }
 
         h1 {
-            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(to right, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
         }
 
-        p {
-            color: #555;
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 32px;
         }
 
-        button {
-            padding: 12px 20px;
-            border: none;
+        .pipeline-tags {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
             border-radius: 8px;
+            font-size: 13px;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+            color: #cbd5e1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #0284c7, #6366f1);
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            background: #222;
-            color: white;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        #status-box {
+            margin-top: 24px;
+            min-height: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--accent);
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
@@ -47,21 +153,32 @@
 <body>
 
     <div class="card">
-        <h1>🚀 DevOps Demo</h1>
-        <p>Frontend running inside a Docker container.</p>
-        <p>ECR → ECS → Fargate</p>
+        <div class="badge">
+            <span class="pulse-dot"></span>
+            CI/CD Pipeline v2.0 • Active
+        </div>
 
-        <button onclick="showMessage()">
-            Test Application
+        <h1>🚀 DevOps Demo Application</h1>
+        <p class="subtitle">Built with Docker & Nginx, deployed automatically to Amazon ECR via GitHub Actions.</p>
+
+        <div class="pipeline-tags">
+            <span class="tag">Docker</span>
+            <span class="tag">GitHub Actions</span>
+            <span class="tag">Amazon ECR</span>
+            <span class="tag">ap-south-1</span>
+        </div>
+
+        <button class="btn" onclick="testHealth()">
+            Verify Deployment Status
         </button>
 
-        <p id="message"></p>
+        <div id="status-box"></div>
     </div>
 
     <script>
-        function showMessage() {
-            document.getElementById("message").innerText =
-                "Docker container is working! 🎉";
+        function testHealth() {
+            const box = document.getElementById("status-box");
+            box.innerText = "✨ Container online & responding! Deployed via commit: " + new Date().toLocaleTimeString();
         }
     </script>
 
